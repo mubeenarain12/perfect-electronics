@@ -81,6 +81,8 @@ async function init() {
   products = await loadProducts();
   document.title = SHOP.name;
   $("#brand").textContent = SHOP.name;
+  drawPanels();
+  document.querySelectorAll("[data-wa]").forEach((a) => { a.href = `https://wa.me/${SHOP.whatsapp}`; a.target = "_blank"; a.rel = "noopener"; });
   renderChips(); renderGrid(); renderCart();
 
   $("#search").addEventListener("input", (e) => { query = e.target.value.trim().toLowerCase(); renderGrid(); });
