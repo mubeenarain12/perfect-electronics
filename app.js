@@ -64,6 +64,19 @@ function sendOrder(e) {
   window.open(`https://wa.me/${SHOP.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
+function drawPanels() {
+  const g = $("#panels"); if (!g) return;
+  let y = 478, out = "";
+  for (let r = 0; r < 5; r++) {
+    const h = 14 + r * 12, w = 64 + r * 30;
+    for (let x = -300; x < 1700; x += w + 6) {
+      out += `<rect x="${(x + y * 0.325).toFixed(1)}" y="${y}" width="${w}" height="${h}" rx="2" transform="skewX(-18)"/>`;
+    }
+    y += h + 5;
+  }
+  g.innerHTML = out;
+}
+
 async function init() {
   products = await loadProducts();
   document.title = SHOP.name;
