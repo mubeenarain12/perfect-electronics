@@ -1,7 +1,7 @@
 // ===== SHOP SETTINGS =====
 const SHOP = {
   name: "Perfect Electronics & Solar System",
-  whatsapp: "923001234567", // your real number: with country code, no + sign and no spaces
+  whatsapp: "+92318-3845440", // your real number: with country code, no + sign and no spaces
   currency: "Rs",
 };
 
