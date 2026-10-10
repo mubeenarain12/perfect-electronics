@@ -92,4 +92,251 @@ footer{background:var(--navy);color:#94a3b8;text-align:center;padding:24px 16px;
 .rm{border:0;background:none;color:var(--red);cursor:pointer;font-size:13px}
 .df{padding:16px;border-top:1px solid var(--line);display:grid;gap:8px}
 .df input,.df textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
-.total{
+.total{font-weight:800;color:var(--navy);font-size:14px}
+.note{font-size:12px;color:var(--muted)}
+@media(max-width:640px){.head{flex-wrap:wrap}.search{order:3;max-width:none;flex-basis:100%}}
+</style>
+</head>
+<body id="top">
+
+<div class="topbar"><div class="wrap">
+  <div>Confirm price on WhatsApp before placing an order 🙂</div>
+  <div>📍 Main Hyderabad Road, Tando Adam &nbsp;·&nbsp; 🕙 10:00 AM – 8:00 PM</div>
+</div></div>
+
+<header><div class="wrap head">
+  <a class="logo" href="#top">Perfect Electronics<span>& Solar System</span></a>
+  <div class="search"><input id="q" type="search" placeholder="Search products..." aria-label="Search products"></div>
+  <button class="cartbtn" id="cartbtn">🛒 Cart <b id="cnt">0</b></button>
+</div></header>
+
+<nav><div class="wrap" id="nav"></div></nav>
+
+<div class="hero"><div class="wrap">
+  <h1>Solar & electronics, right here in Tando Adam.</h1>
+  <p>Solar panels, inverters, batteries and more. Browse the products, add them to your cart and send your order on WhatsApp.</p>
+  <div class="btns">
+    <a class="btn btn-accent" href="#shop">Shop now</a>
+    <a class="btn btn-wa" data-wa href="#" target="_blank" rel="noopener">Chat on WhatsApp</a>
+  </div>
+</div></div>
+
+<section><div class="wrap">
+  <h2 class="title">Shop by category</h2>
+  <div class="cats" id="cats"></div>
+</div></section>
+
+<section id="shop"><div class="wrap">
+  <h2 class="title">Our products</h2>
+  <div class="tabs" id="tabs"></div>
+  <div id="products"></div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="feats">
+    <div class="feat"><b>Local shop in Tando Adam</b><p>Visit us on Main Hyderabad Road and see the products in person.</p></div>
+    <div class="feat"><b>Order on WhatsApp</b><p>Add items to your cart and send your order to us in one tap.</p></div>
+    <div class="feat"><b>Price confirmed first</b><p>We confirm price and availability with you before the order is final.</p></div>
+    <div class="feat"><b>Cash on delivery</b><p>Pay when you receive your order.</p></div>
+  </div>
+</div></section>
+
+<section class="about" id="about"><div class="wrap">
+  <h2 class="title">About us</h2>
+  <p><b>Perfect Electronics and Solar System</b> is a shop on Main Hyderabad Road, Tando Adam, selling solar panels, solar inverters, batteries, electronics and accessories.</p>
+  <p>Not sure which inverter or battery size suits your home or shop? Visit us or message us on WhatsApp and we will help you choose, then confirm the price and availability before you order.</p>
+  <p>Shop timing: <b>10:00 AM to 8:00 PM</b>.</p>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <h2 class="title">Contact us</h2>
+  <div class="contact-grid">
+    <div class="box"><h4>📍 Address</h4><p>Main Hyderabad Road, Tando Adam</p>
+      <p><a class="link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Main+Hyderabad+Road+Tando+Adam">Open in Google Maps</a></p></div>
+    <div class="box"><h4>🕙 Shop timing</h4><p>10:00 AM – 8:00 PM</p></div>
+    <div class="box"><h4>💬 WhatsApp</h4><p id="phonetext"></p>
+      <p><a class="link" data-wa target="_blank" rel="noopener" href="#">Message us on WhatsApp</a></p></div>
+  </div>
+</div></section>
+
+<footer>© <span id="yr"></span> Perfect Electronics and Solar System. All rights reserved.</footer>
+
+<a class="wafab" data-wa href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
+
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="dh"><span>Your cart</span><button id="closecart" aria-label="Close cart">×</button></div>
+  <div class="items" id="items"></div>
+  <div class="df">
+    <div class="total" id="total"></div>
+    <input id="cname" placeholder="Your name" autocomplete="name">
+    <input id="cphone" placeholder="Phone number" autocomplete="tel" inputmode="tel">
+    <textarea id="caddr" rows="2" placeholder="Delivery address"></textarea>
+    <button class="btn btn-wa" id="send">Send order on WhatsApp</button>
+    <p class="note">Payment: cash on delivery. We will confirm price and availability on WhatsApp.</p>
+  </div>
+</aside>
+
+<script>
+/* ============ EDIT THIS PART ============ */
+const SHOP = {
+  name: "Perfect Electronics & Solar System",
+  whatsapp: "923171676546",
+  phoneText: "0317-1676546"
+};
+
+const CATEGORIES = [
+  { id: "panels",      name: "Solar Panels",    icon: "☀️" },
+  { id: "inverters",   name: "Solar Inverters", icon: "⚡" },
+  { id: "batteries",   name: "Batteries",       icon: "🔋" },
+  { id: "electronics", name: "Electronics",     icon: "📺" },
+  { id: "accessories", name: "Accessories",     icon: "🔌" }
+];
+
+/* Add a product = add one line.
+   price: null  -> shows "Ask price on WhatsApp"
+   price: 12000 -> shows Rs. 12,000
+   oldPrice: 15000 (optional) -> shows SALE badge and the old price struck out
+   image: "https://..." (optional) -> product photo, otherwise an icon is shown
+   cat must match a category id above. id must be unique. */
+const PRODUCTS = [
+  { id: "p1", cat: "panels",      brand: "Brand", name: "Solar Panel 585W",         price: null, oldPrice: null, image: "" },
+  { id: "p2", cat: "panels",      brand: "Brand", name: "Solar Panel 550W",         price: null, oldPrice: null, image: "" },
+  { id: "p3", cat: "inverters",   brand: "Brand", name: "Hybrid Solar Inverter 6KW",  price: null, oldPrice: null, image: "" },
+  { id: "p4", cat: "inverters",   brand: "Brand", name: "On-Grid Solar Inverter 10KW", price: null, oldPrice: null, image: "" },
+  { id: "p5", cat: "batteries",   brand: "Brand", name: "Lithium Battery 5kWh",     price: null, oldPrice: null, image: "" },
+  { id: "p6", cat: "batteries",   brand: "Brand", name: "Tubular Battery 200Ah",    price: null, oldPrice: null, image: "" },
+  { id: "p7", cat: "electronics", brand: "Brand", name: "Ceiling Fan",              price: null, oldPrice: null, image: "" },
+  { id: "p8", cat: "accessories", brand: "Brand", name: "Solar Cable (per meter)",  price: null, oldPrice: null, image: "" }
+];
+/* ============ END OF EDIT PART ============ */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = n => "Rs. " + Number(n).toLocaleString("en-PK");
+const hasPrice = p => typeof p.price === "number";
+
+let active = "all";
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem("pe_cart") || "{}") || {}; } catch (e) { cart = {}; }
+const save = () => { try { localStorage.setItem("pe_cart", JSON.stringify(cart)); } catch (e) {} };
+const lines = () => Object.keys(cart)
+  .map(id => ({ p: PRODUCTS.find(x => x.id === id), q: Number(cart[id]) }))
+  .filter(l => l.p && l.q > 0);
+
+function renderNav() {
+  $("#nav").innerHTML =
+    '<a href="#top">Home</a><a href="#shop" data-cat="all">All Products</a>' +
+    CATEGORIES.map(c => '<a href="#shop" data-cat="' + esc(c.id) + '">' + esc(c.name) + '</a>').join("") +
+    '<a href="#about">About Us</a><a href="#contact">Contact</a>';
+}
+function renderCats() {
+  $("#cats").innerHTML = CATEGORIES.map(c =>
+    '<div class="cat" data-cat="' + esc(c.id) + '"><i>' + c.icon + '</i>' + esc(c.name) + '</div>').join("");
+}
+function renderTabs() {
+  const tabs = [{ id: "all", name: "All" }].concat(CATEGORIES);
+  $("#tabs").innerHTML = tabs.map(t =>
+    '<button class="tab' + (t.id === active ? " on" : "") + '" data-tab="' + esc(t.id) + '">' + esc(t.name) + '</button>').join("");
+}
+function card(p) {
+  const sale = hasPrice(p) && typeof p.oldPrice === "number" && p.oldPrice > p.price;
+  const cat = CATEGORIES.find(c => c.id === p.cat);
+  const img = p.image ? '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy">' : (cat ? cat.icon : "📦");
+  const price = hasPrice(p) ? fmt(p.price) + (sale ? "<s>" + fmt(p.oldPrice) + "</s>" : "") : "Ask price on WhatsApp";
+  return '<article class="card">' + (sale ? '<span class="sale">SALE</span>' : "") +
+    '<div class="img">' + img + '</div><div class="body">' +
+    (p.brand ? '<div class="brand">' + esc(p.brand) + '</div>' : "") +
+    '<div class="pname">' + esc(p.name) + '</div>' +
+    '<div class="price' + (hasPrice(p) ? "" : " ask") + '">' + price + '</div>' +
+    '<button class="add" data-add="' + esc(p.id) + '">Add to cart</button></div></article>';
+}
+function renderProducts() {
+  const q = $("#q").value.trim().toLowerCase();
+  const list = PRODUCTS.filter(p =>
+    (active === "all" || p.cat === active) &&
+    (!q || (p.name + " " + (p.brand || "")).toLowerCase().includes(q)));
+  const box = $("#products");
+  if (!list.length) { box.innerHTML = '<div class="empty">No products found.</div>'; return; }
+  box.innerHTML = CATEGORIES.map(c => {
+    const items = list.filter(p => p.cat === c.id);
+    if (!items.length) return "";
+    return '<div class="group"><h3>' + esc(c.name) + '</h3><div class="grid">' + items.map(card).join("") + '</div></div>';
+  }).join("");
+}
+function renderCart() {
+  const ls = lines();
+  $("#cnt").textContent = ls.reduce((a, l) => a + l.q, 0);
+  const el = $("#items");
+  if (!ls.length) { el.innerHTML = '<div class="empty">Your cart is empty.</div>'; $("#total").textContent = ""; return; }
+  el.innerHTML = ls.map(({ p, q }) =>
+    '<div class="item"><div><div><b>' + esc(p.name) + '</b></div>' +
+    '<div class="note">' + (hasPrice(p) ? fmt(p.price) : "Price on WhatsApp") + '</div>' +
+    '<div class="qty"><button data-dec="' + esc(p.id) + '">−</button><span>' + q + '</span><button data-inc="' + esc(p.id) + '">+</button></div></div>' +
+    '<button class="rm" data-rm="' + esc(p.id) + '">Remove</button></div>').join("");
+  const known = ls.filter(l => hasPrice(l.p));
+  const sum = known.reduce((a, l) => a + l.p.price * l.q, 0);
+  $("#total").textContent = known.length
+    ? "Estimated total: " + fmt(sum) + (known.length < ls.length ? " + items to confirm" : "")
+    : "Prices will be confirmed on WhatsApp";
+}
+
+function openCart() { $("#drawer").classList.add("show"); $("#ov").classList.add("show"); }
+function closeCart() { $("#drawer").classList.remove("show"); $("#ov").classList.remove("show"); }
+
+function sendOrder() {
+  const ls = lines();
+  if (!ls.length) { alert("Your cart is empty."); return; }
+  const name = $("#cname").value.trim(), phone = $("#cphone").value.trim(), addr = $("#caddr").value.trim();
+  if (!name || !phone || !addr) { alert("Please fill in your name, phone number and address."); return; }
+  let msg = "Assalam-o-Alaikum, I want to order from " + SHOP.name + ":\n\n";
+  ls.forEach((l, i) => {
+    msg += (i + 1) + ". " + l.p.name + " x " + l.q + (hasPrice(l.p) ? " - " + fmt(l.p.price * l.q) : "") + "\n";
+  });
+  msg += "\nName: " + name + "\nPhone: " + phone + "\nAddress: " + addr +
+    "\nPayment: Cash on delivery\n\nPlease confirm price and availability.";
+  window.open("https://wa.me/" + SHOP.whatsapp + "?text=" + encodeURIComponent(msg), "_blank");
+}
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-add],[data-inc],[data-dec],[data-rm],[data-tab],[data-cat]");
+  if (!t) return;
+  const d = t.dataset;
+  if (d.add) {
+    cart[d.add] = (Number(cart[d.add]) || 0) + 1; save(); renderCart();
+    const old = t.textContent; t.textContent = "Added ✓";
+    setTimeout(() => { t.textContent = old; }, 900);
+  } else if (d.inc) {
+    cart[d.inc] = (Number(cart[d.inc]) || 0) + 1; save(); renderCart();
+  } else if (d.dec) {
+    if ((Number(cart[d.dec]) || 0) <= 1) delete cart[d.dec]; else cart[d.dec] -= 1;
+    save(); renderCart();
+  } else if (d.rm) {
+    delete cart[d.rm]; save(); renderCart();
+  } else if (d.tab !== undefined) {
+    active = d.tab; renderTabs(); renderProducts();
+  } else if (d.cat !== undefined) {
+    e.preventDefault();
+    active = d.cat; renderTabs(); renderProducts();
+    $("#shop").scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+$("#q").addEventListener("input", renderProducts);
+$("#cartbtn").addEventListener("click", openCart);
+$("#closecart").addEventListener("click", closeCart);
+$("#ov").addEventListener("click", closeCart);
+$("#send").addEventListener("click", sendOrder);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+
+const waText = "Assalam-o-Alaikum, I am contacting you through the " + SHOP.name + " website. I need some information.";
+document.querySelectorAll("[data-wa]").forEach(a => {
+  a.href = "https://wa.me/" + SHOP.whatsapp + "?text=" + encodeURIComponent(waText);
+});
+$("#phonetext").textContent = SHOP.phoneText;
+$("#yr").textContent = new Date().getFullYear();
+
+renderNav(); renderCats(); renderTabs(); renderProducts(); renderCart();
+</script>
+</body>
+</html>
