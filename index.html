@@ -15,9 +15,6 @@ a{color:inherit;text-decoration:none}
 section{padding:40px 0;scroll-margin-top:80px}
 h2.title{font-size:24px;color:var(--navy);margin-bottom:20px}
 
-.topbar{background:var(--navy);color:#e2e8f0;font-size:13px}
-.topbar .wrap{display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between;padding-top:8px;padding-bottom:8px}
-
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
 .head{display:flex;align-items:center;gap:16px;padding:12px 0}
 .logo{font-weight:800;font-size:19px;color:var(--navy);line-height:1.15}
@@ -53,7 +50,7 @@ nav a:hover{color:var(--accent-d)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative}
 .card .img{aspect-ratio:1/1;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:56px}
-.card .img img{width:100%;height:100%;object-fit:contain;background:#fff}
+.card .img img{width:100%;height:100%;object-fit:contain;background:#fff;font-size:13px}
 .card .body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
 .brand{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-d)}
 .pname{font-size:15px;font-weight:600;color:var(--navy);line-height:1.35}
@@ -98,8 +95,6 @@ footer{background:var(--navy);color:#94a3b8;text-align:center;padding:24px 16px;
 </style>
 </head>
 <body id="top">
-
-
 
 <header><div class="wrap head">
   <a class="logo" href="#top">Perfect Electronics<span>& Solar System</span></a>
@@ -190,21 +185,18 @@ const CATEGORIES = [
   { id: "accessories", name: "Accessories",     icon: "🔌" }
 ];
 
-/* Add a product = add one line.
+/* Add a product = add one line (keep a comma at the end of every line except the last).
    price: null  -> shows "Ask price on WhatsApp"
    price: 12000 -> shows Rs. 12,000
    oldPrice: 15000 (optional) -> shows SALE badge and the old price struck out
-   image: "https://..." (optional) -> product photo, otherwise an icon is shown
-   cat must match a category id above. id must be unique. */
+   image: "images/name.jpg" (optional) -> product photo, otherwise an icon is shown
+   cat must match a category id above. id must be unique.
+   A category with no products is hidden automatically. */
 const PRODUCTS = [
-   { id: "p1", cat: "panels",      brand: "Brand", name: "Solar Panel 585W",         price: null, oldPrice: null, image: "" },
-  { id: "p2", cat: "panels",      brand: "Brand", name: "Solar Panel 550W",         price: null, oldPrice: null, image: "" },
-{ id: "p3", cat: "inverters", brand: "Fronus",  name: "Fronus PV14000 10KW Pure Sine Wave Solar Inverter (PV Only)", price: 48000,  oldPrice: null, image: "images/fronus-pv14000.jpg" },
-{ id: "p4", cat: "inverters", brand: "Gripsun", name: "Gripsun Magic Box N-5100W Solar Inverter",                     price: 210000, oldPrice: null, image: "images/gripsun-magic-box.jpg" },
-  { id: "p5", cat: "batteries",   brand: "Brand", name: "Lithium Battery 5kWh",     price: null, oldPrice: null, image: "" },
-  { id: "p6", cat: "batteries",   brand: "Brand", name: "Tubular Battery 200Ah",    price: null, oldPrice: null, image: "" },
-  { id: "p7", cat: "electronics", brand: "Brand", name: "Ceiling Fan",              price: null, oldPrice: null, image: "" },
-  { id: "p8", cat: "accessories", brand: "Brand", name: "Solar Cable (per meter)",  price: null, oldPrice: null, image: "" }
+  { id: "p3",  cat: "inverters", brand: "Fronus",  name: "Fronus PV14000 10KW Pure Sine Wave Solar Inverter (PV Only)", price: 48000,  oldPrice: null, image: "images/fronus-pv14000.jpg" },
+  { id: "p4",  cat: "inverters", brand: "Gripsun", name: "Gripsun Magic Box N-5100W Solar Inverter",                     price: 210000, oldPrice: null, image: "images/gripsun-magic-box.jpg" },
+  { id: "p11", cat: "inverters", brand: "Gripsun", name: "Gripsun Elite 4.2KW Pure Sine Wave Solar Inverter",            price: 100000, oldPrice: null, image: "images/gripsun-elite-4200.jpg" },
+  { id: "p12", cat: "inverters", brand: "Gripsun", name: "Gripsun Elite 6.2KW Pure Sine Wave Solar Inverter",            price: 120000, oldPrice: null, image: "images/gripsun-elite-6200.jpg" }
 ];
 /* ============ END OF EDIT PART ============ */
 
@@ -212,6 +204,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = n => "Rs. " + Number(n).toLocaleString("en-PK");
 const hasPrice = p => typeof p.price === "number";
+const activeCats = () => CATEGORIES.filter(c => PRODUCTS.some(p => p.cat === c.id));
 
 let active = "all";
 let cart = {};
@@ -224,22 +217,25 @@ const lines = () => Object.keys(cart)
 function renderNav() {
   $("#nav").innerHTML =
     '<a href="#top">Home</a><a href="#shop" data-cat="all">All Products</a>' +
-    CATEGORIES.map(c => '<a href="#shop" data-cat="' + esc(c.id) + '">' + esc(c.name) + '</a>').join("") +
+    activeCats().map(c => '<a href="#shop" data-cat="' + esc(c.id) + '">' + esc(c.name) + '</a>').join("") +
     '<a href="#about">About Us</a><a href="#contact">Contact</a>';
 }
 function renderCats() {
-  $("#cats").innerHTML = CATEGORIES.map(c =>
+  $("#cats").innerHTML = activeCats().map(c =>
     '<div class="cat" data-cat="' + esc(c.id) + '"><i>' + c.icon + '</i>' + esc(c.name) + '</div>').join("");
 }
 function renderTabs() {
-  const tabs = [{ id: "all", name: "All" }].concat(CATEGORIES);
+  const tabs = [{ id: "all", name: "All" }].concat(activeCats());
   $("#tabs").innerHTML = tabs.map(t =>
     '<button class="tab' + (t.id === active ? " on" : "") + '" data-tab="' + esc(t.id) + '">' + esc(t.name) + '</button>').join("");
 }
 function card(p) {
   const sale = hasPrice(p) && typeof p.oldPrice === "number" && p.oldPrice > p.price;
   const cat = CATEGORIES.find(c => c.id === p.cat);
-  const img = p.image ? '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy">' : (cat ? cat.icon : "📦");
+  const icon = cat ? cat.icon : "📦";
+  const img = p.image
+    ? '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy" data-fb="' + icon + '" onerror="this.outerHTML=this.dataset.fb">'
+    : icon;
   const price = hasPrice(p) ? fmt(p.price) + (sale ? "<s>" + fmt(p.oldPrice) + "</s>" : "") : "Ask price on WhatsApp";
   return '<article class="card">' + (sale ? '<span class="sale">SALE</span>' : "") +
     '<div class="img">' + img + '</div><div class="body">' +
