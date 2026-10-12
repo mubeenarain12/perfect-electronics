@@ -15,13 +15,15 @@ a{color:inherit;text-decoration:none}
 section{padding:40px 0;scroll-margin-top:80px}
 h2.title{font-size:24px;color:var(--navy);margin-bottom:20px}
 
-/* Header Redesign */
+/* Header Layout Fix */
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-.head{display:flex;align-items:center;justify-space:between;padding:12px 16px;position:relative}
-.head-left{display:flex;align-items:center;gap:16px}
-.icon-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--navy);display:flex;align-items:center;justify-content:center;padding:4px}
-.logo{font-weight:800;font-size:17px;color:var(--navy);line-height:1.15;text-align:center}
+.head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;width:100%;max-width:1200px;margin:0 auto}
+.head-left{display:flex;align-items:center;gap:16px;flex:1}
+.logo{font-weight:800;font-size:17px;color:var(--navy);line-height:1.15;text-align:center;flex:1;display:block}
 .logo span{display:block;font-size:10px;font-weight:700;color:var(--accent-d);letter-spacing:.08em;text-transform:uppercase}
+.head-right{display:flex;align-items:center;justify-content:flex-end;flex:1}
+
+.icon-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--navy);display:flex;align-items:center;justify-content:center;padding:4px}
 
 /* Cart Icon */
 .cart-icon-btn{background:none;border:none;cursor:pointer;position:relative;padding:4px;display:flex;align-items:center}
@@ -116,24 +118,26 @@ footer{background:var(--navy);color:#94a3b8;text-align:center;padding:24px 16px;
 <body id="top">
 
 <header>
-  <div class="wrap head">
-    <!-- Left: Menu & Search Icons -->
+  <div class="head">
+    <!-- Left Section: Menu & Search -->
     <div class="head-left">
       <button class="icon-btn" id="menubtn" aria-label="Toggle menu">☰</button>
       <button class="icon-btn" id="searchtoggle" aria-label="Search">🔍</button>
     </div>
 
-    <!-- Center: Logo -->
+    <!-- Center Section: Logo -->
     <a class="logo" href="#top">Perfect Electronics<span>& Solar System</span></a>
 
-    <!-- Right: Cart Icon -->
-    <button class="cart-icon-btn" id="cartbtn" aria-label="Cart">
-      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-      <span class="cart-badge" id="cnt">0</span>
-    </button>
+    <!-- Right Section: Cart -->
+    <div class="head-right">
+      <button class="cart-icon-btn" id="cartbtn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span class="cart-badge" id="cnt">0</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Search Bar Container -->
+  <!-- Search Overlay Container -->
   <div class="search-bar-container" id="searchbox">
     <input id="q" type="search" placeholder="Search products..." aria-label="Search products">
   </div>
