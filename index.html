@@ -15,7 +15,7 @@ a{color:inherit;text-decoration:none}
 section{padding:40px 0;scroll-margin-top:80px}
 h2.title{font-size:24px;color:var(--navy);margin-bottom:20px}
 
-/* Header Redesign according to image */
+/* Header Redesign */
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
 .head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:relative}
 .head-left{display:flex;align-items:center;gap:16px}
@@ -23,21 +23,31 @@ header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0
 .logo{font-weight:800;font-size:17px;color:var(--navy);line-height:1.15;text-align:center}
 .logo span{display:block;font-size:10px;font-weight:700;color:var(--accent-d);letter-spacing:.08em;text-transform:uppercase}
 
-/* Cart Icon with badge */
+/* Cart Icon */
 .cart-icon-btn{background:none;border:none;cursor:pointer;position:relative;padding:4px;display:flex;align-items:center}
 .cart-icon-btn svg{width:24px;height:24px;fill:none;stroke:var(--navy);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cart-badge{position:absolute;top:-2px;right:-4px;background:var(--navy);color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 
-/* Search Bar Overlay/Popup */
+/* Search Bar Overlay */
 .search-bar-container{display:none;position:absolute;top:100%;left:0;width:100%;background:#fff;padding:10px 16px;border-bottom:1px solid var(--line);box-shadow:0 4px 6px rgba(0,0,0,0.05);z-index:25}
 .search-bar-container.show{display:flex;gap:8px}
 .search-bar-container input{flex:1;padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;outline:none}
 .search-bar-container input:focus{border-color:var(--accent)}
 
+/* Desktop Navigation */
 nav{background:#fff;border-bottom:1px solid var(--line)}
 nav .wrap{display:flex;gap:4px;overflow-x:auto}
 nav a{padding:12px 14px;font-size:14px;font-weight:600;white-space:nowrap}
 nav a:hover{color:var(--accent-d)}
+
+/* Side Navigation Drawer for Mobile Categories */
+.nav-drawer{position:fixed;top:0;left:0;height:100%;width:min(300px,80%);background:#fff;z-index:60;transform:translateX(-100%);transition:.25s;display:flex;flex-direction:column;box-shadow:2px 0 10px rgba(0,0,0,0.1)}
+.nav-drawer.show{transform:none}
+.nav-dh{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line);font-weight:800;color:var(--navy)}
+.nav-dh button{border:0;background:none;font-size:26px;cursor:pointer}
+.nav-list{display:flex;flex-direction:column;padding:10px 0;overflow-y:auto}
+.nav-list a{padding:12px 20px;font-size:15px;font-weight:600;color:var(--navy);border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.nav-list a:hover{background:var(--bg);color:var(--accent-d)}
 
 .hero{background:linear-gradient(135deg,var(--navy),#1e3a5f);color:#fff;padding:56px 0}
 .hero h1{font-size:clamp(26px,5vw,42px);line-height:1.15;max-width:660px}
@@ -123,11 +133,17 @@ footer{background:var(--navy);color:#94a3b8;text-align:center;padding:24px 16px;
     </button>
   </div>
 
-  <!-- Hidden Search Bar Container -->
+  <!-- Search Bar Container -->
   <div class="search-bar-container" id="searchbox">
     <input id="q" type="search" placeholder="Search products..." aria-label="Search products">
   </div>
 </header>
+
+<!-- Side Navigation Menu for Mobile -->
+<aside class="nav-drawer" id="navdrawer">
+  <div class="nav-dh"><span>Categories & Menu</span><button id="closenav">×</button></div>
+  <div class="nav-list" id="navlist"></div>
+</aside>
 
 <nav><div class="wrap" id="nav"></div></nav>
 
@@ -183,6 +199,7 @@ footer{background:var(--navy);color:#94a3b8;text-align:center;padding:24px 16px;
 <a class="wafab" data-wa href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
 
 <div class="ov" id="ov"></div>
+
 <aside class="drawer" id="drawer" aria-label="Shopping cart">
   <div class="dh"><span>Your cart</span><button id="closecart" aria-label="Close cart">×</button></div>
   <div class="items" id="items"></div>
@@ -235,20 +252,31 @@ const lines = () => Object.keys(cart)
   .filter(l => l.p && l.q > 0);
 
 function renderNav() {
-  $("#nav").innerHTML =
-    '<a href="#top">Home</a><a href="#shop" data-cat="all">All Products</a>' +
+  const linksHtml = '<a href="#top">Home</a><a href="#shop" data-cat="all">All Products</a>' +
     activeCats().map(c => '<a href="#shop" data-cat="' + esc(c.id) + '">' + esc(c.name) + '</a>').join("") +
     '<a href="#about">About Us</a><a href="#contact">Contact</a>';
+  
+  $("#nav").innerHTML = linksHtml;
+
+  /* Mobile Drawer Menu Links */
+  const drawerHtml = '<a href="#top" class="drawer-link">Home</a><a href="#shop" data-cat="all" class="drawer-link">All Products</a>' +
+    activeCats().map(c => '<a href="#shop" data-cat="' + esc(c.id) + '" class="drawer-link"><span>' + esc(c.icon) + ' ' + esc(c.name) + '</span></a>').join("") +
+    '<a href="#about" class="drawer-link">About Us</a><a href="#contact" class="drawer-link">Contact</a>';
+  
+  $("#navlist").innerHTML = drawerHtml;
 }
+
 function renderCats() {
   $("#cats").innerHTML = activeCats().map(c =>
     '<div class="cat" data-cat="' + esc(c.id) + '"><i>' + c.icon + '</i>' + esc(c.name) + '</div>').join("");
 }
+
 function renderTabs() {
   const tabs = [{ id: "all", name: "All" }].concat(activeCats());
   $("#tabs").innerHTML = tabs.map(t =>
     '<button class="tab' + (t.id === active ? " on" : "") + '" data-tab="' + esc(t.id) + '">' + esc(t.name) + '</button>').join("");
 }
+
 function card(p) {
   const sale = hasPrice(p) && typeof p.oldPrice === "number" && p.oldPrice > p.price;
   const cat = CATEGORIES.find(c => c.id === p.cat);
@@ -264,6 +292,7 @@ function card(p) {
     '<div class="price' + (hasPrice(p) ? "" : " ask") + '">' + price + '</div>' +
     '<button class="add" data-add="' + esc(p.id) + '">Add to cart</button></div></article>';
 }
+
 function renderProducts() {
   const q = $("#q").value.trim().toLowerCase();
   const list = PRODUCTS.filter(p =>
@@ -277,6 +306,7 @@ function renderProducts() {
     return '<div class="group"><h3>' + esc(c.name) + '</h3><div class="grid">' + items.map(card).join("") + '</div></div>';
   }).join("");
 }
+
 function renderCart() {
   const ls = lines();
   $("#cnt").textContent = ls.reduce((a, l) => a + l.q, 0);
@@ -294,8 +324,11 @@ function renderCart() {
     : "Prices will be confirmed on WhatsApp";
 }
 
-function openCart() { $("#drawer").classList.add("show"); $("#ov").classList.add("show"); }
+function openCart() { closeNav(); $("#drawer").classList.add("show"); $("#ov").classList.add("show"); }
 function closeCart() { $("#drawer").classList.remove("show"); $("#ov").classList.remove("show"); }
+
+function openNav() { closeCart(); $("#navdrawer").classList.add("show"); $("#ov").classList.add("show"); }
+function closeNav() { $("#navdrawer").classList.remove("show"); $("#ov").classList.remove("show"); }
 
 function sendOrder() {
   const ls = lines();
@@ -313,6 +346,9 @@ function sendOrder() {
 
 document.addEventListener("click", e => {
   const t = e.target.closest("[data-add],[data-inc],[data-dec],[data-rm],[data-tab],[data-cat]");
+  if (e.target.classList.contains("drawer-link")) {
+    closeNav();
+  }
   if (!t) return;
   const d = t.dataset;
   if (d.add) {
@@ -329,13 +365,13 @@ document.addEventListener("click", e => {
   } else if (d.tab !== undefined) {
     active = d.tab; renderTabs(); renderProducts();
   } else if (d.cat !== undefined) {
-    e.preventDefault();
     active = d.cat; renderTabs(); renderProducts();
+    closeNav();
     $("#shop").scrollIntoView({ behavior: "smooth" });
   }
 });
 
-/* Search Toggle Listener */
+/* Toggle Listeners */
 $("#searchtoggle").addEventListener("click", () => {
   const sBox = $("#searchbox");
   sBox.classList.toggle("show");
@@ -344,17 +380,15 @@ $("#searchtoggle").addEventListener("click", () => {
   }
 });
 
-/* Menu Toggle Scroll Listener */
-$("#menubtn").addEventListener("click", () => {
-  $("#nav").scrollIntoView({ behavior: "smooth" });
-});
+$("#menubtn").addEventListener("click", openNav);
+$("#closenav").addEventListener("click", closeNav);
 
 $("#q").addEventListener("input", renderProducts);
 $("#cartbtn").addEventListener("click", openCart);
 $("#closecart").addEventListener("click", closeCart);
-$("#ov").addEventListener("click", closeCart);
+$("#ov").addEventListener("click", () => { closeCart(); closeNav(); });
 $("#send").addEventListener("click", sendOrder);
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeNav(); } });
 
 const waText = "Assalam-o-Alaikum, I am contacting you through the " + SHOP.name + " website. I need some information.";
 document.querySelectorAll("[data-wa]").forEach(a => {
